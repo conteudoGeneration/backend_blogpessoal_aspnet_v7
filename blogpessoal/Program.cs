@@ -1,4 +1,7 @@
 
+using blogpessoal.Data;
+using Microsoft.EntityFrameworkCore;
+
 namespace blogpessoal
 {
     public class Program
@@ -10,6 +13,14 @@ namespace blogpessoal
             // Add services to the container.
 
             builder.Services.AddControllers();
+
+            // Conexão com o Banco de dados
+            var connectionString = builder.Configuration.
+                    GetConnectionString("DefaultConnection");
+
+            builder.Services.AddDbContext<AppDbContext>(options =>
+                options.UseSqlServer(connectionString)
+            );
 
             // Learn more about configuring Swagger/OpenAPI
             // at https://aka.ms/aspnetcore/swashbuckle
@@ -30,6 +41,16 @@ namespace blogpessoal
 
             var app = builder.Build();
 
+            // Criar o Banco de dados e as tabelas Automaticamente
+            using (var scope = app.Services.CreateAsyncScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                dbContext.Database.EnsureCreated();
+
+            }
+
+            app.UseDeveloperExceptionPage();
+
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
@@ -40,7 +61,6 @@ namespace blogpessoal
             app.UseCors("MyPolicy");
 
             app.UseAuthorization();
-
 
             app.MapControllers();
 
