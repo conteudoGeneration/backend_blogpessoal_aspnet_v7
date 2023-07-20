@@ -1,6 +1,8 @@
 
 using blogpessoal.Data;
 using blogpessoal.Model;
+using blogpessoal.Repository.Implements;
+using blogpessoal.Repository;
 using blogpessoal.Validator;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
@@ -27,6 +29,9 @@ namespace blogpessoal
 
             // Validação das Entidades
             builder.Services.AddTransient<IValidator<Postagem>, PostagemValidator>();
+
+            // Registrar as Classes e Interfaces Repository
+            builder.Services.AddScoped<IPostagemRepository, PostagemRepository>();
 
             // Learn more about configuring Swagger/OpenAPI
             // at https://aka.ms/aspnetcore/swashbuckle
