@@ -1,8 +1,8 @@
 ﻿using blogpessoal.Model;
 
-namespace blogpessoal.Repository
+namespace blogpessoal.Service
 {
-    public interface IPostagemRepository
+    public interface IPostagemService
     {
         Task<IEnumerable<Postagem>> GetAll();
 

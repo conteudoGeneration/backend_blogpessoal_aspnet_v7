@@ -1,11 +1,10 @@
 ﻿using blogpessoal.Model;
 
-namespace blogpessoal.Repository.Implements
+namespace blogpessoal.Service.Implements
 {
-    public class PostagemRepository : IPostagemRepository
+    public class PostagemService : IPostagemService
     {
-
-
+        
         public Task<IEnumerable<Postagem>> GetAll()
         {
             throw new NotImplementedException();
