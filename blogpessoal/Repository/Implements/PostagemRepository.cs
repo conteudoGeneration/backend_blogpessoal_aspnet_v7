@@ -1,14 +1,22 @@
-﻿using blogpessoal.Model;
+﻿using blogpessoal.Data;
+using blogpessoal.Model;
+using Microsoft.EntityFrameworkCore;
 
 namespace blogpessoal.Repository.Implements
 {
     public class PostagemRepository : IPostagemRepository
     {
 
+        public readonly AppDbContext _context;
 
-        public Task<IEnumerable<Postagem>> GetAll()
+        public PostagemRepository(AppDbContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
+        }
+
+        public async Task<IEnumerable<Postagem>> GetAll()
+        {
+            return await _context.Postagens.ToListAsync();
         }
 
         public Task<Postagem?> GetById(long id)
