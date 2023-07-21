@@ -1,4 +1,3 @@
-
 using blogpessoal.Data;
 using blogpessoal.Model;
 using blogpessoal.Validator;
