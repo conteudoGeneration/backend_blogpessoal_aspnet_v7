@@ -19,21 +19,11 @@ namespace blogpessoal.Service.Implements
             return await _context.Postagens.ToListAsync();
         }
 
-        public async Task<Postagem?> GetById(long id)
+        public Task<Postagem?> GetById(long id)
         {
-            try
-            {
-                var Postagem = await _context.Postagens.FirstAsync(i => i.Id == id);
-
-                return Postagem;
-            }
-            catch
-            {
-                return null;
-            }
+            throw new NotImplementedException();
 
         }
-
 
         public Task<IEnumerable<Postagem>> GetByTitulo(string titulo)
         {

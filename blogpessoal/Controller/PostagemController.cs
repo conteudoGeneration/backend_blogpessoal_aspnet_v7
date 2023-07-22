@@ -27,18 +27,5 @@ namespace blogpessoal.Controller
             return Ok(await _postagemService.GetAll());
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult> GetById(long id)
-        {
-            var resposta = await _postagemService.GetById(id);
-
-            if (resposta is null)
-            {
-                return NotFound();
-            }
-
-            return Ok(resposta);
-        }
-
     }
 }
