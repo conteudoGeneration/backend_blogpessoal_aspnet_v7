@@ -34,7 +34,6 @@ namespace blogpessoal.Service.Implements
 
         }
 
-
         public Task<IEnumerable<Postagem>> GetByTitulo(string titulo)
         {
             throw new NotImplementedException();

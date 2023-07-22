@@ -30,15 +30,17 @@ namespace blogpessoal.Controller
         [HttpGet("{id}")]
         public async Task<ActionResult> GetById(long id)
         {
-            var resposta = await _postagemService.GetById(id);
+            var Resposta = await _postagemService.GetById(id);
 
-            if (resposta is null)
+            if (Resposta is null)
             {
                 return NotFound();
             }
 
-            return Ok(resposta);
+            return Ok(Resposta);
         }
 
     }
+
 }
+
