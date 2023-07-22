@@ -2,14 +2,14 @@
 using blogpessoal.Model;
 using Microsoft.EntityFrameworkCore;
 
-namespace blogpessoal.Repository.Implements
+namespace blogpessoal.Service.Implements
 {
-    public class PostagemRepository : IPostagemRepository
+    public class PostagemService : IPostagemService
     {
 
-        public readonly AppDbContext _context;
+        private readonly AppDbContext _context;
 
-        public PostagemRepository(AppDbContext context)
+        public PostagemService(AppDbContext context)
         {
             _context = context;
         }
@@ -19,10 +19,21 @@ namespace blogpessoal.Repository.Implements
             return await _context.Postagens.ToListAsync();
         }
 
-        public Task<Postagem?> GetById(long id)
+        public async Task<Postagem?> GetById(long id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var Postagem = await _context.Postagens.FirstAsync(i => i.Id == id);
+
+                return Postagem;
+            }
+            catch
+            {
+                return null;
+            }
+
         }
+
 
         public Task<IEnumerable<Postagem>> GetByTitulo(string titulo)
         {
