@@ -34,9 +34,13 @@ namespace blogpessoal.Service.Implements
 
         }
 
-        public Task<IEnumerable<Postagem>> GetByTitulo(string titulo)
+        public async Task<IEnumerable<Postagem>> GetByTitulo(string titulo)
         {
-            throw new NotImplementedException();
+            var Postagem = await _context.Postagens
+                .Where(p => p.Titulo.Contains(titulo))
+                .ToListAsync();
+
+            return Postagem;
         }
 
         public Task<Postagem?> Create(Postagem postagem)

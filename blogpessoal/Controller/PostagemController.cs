@@ -40,6 +40,13 @@ namespace blogpessoal.Controller
             return Ok(Resposta);
         }
 
+        [HttpGet("titulo/{titulo}")]
+        public async Task<ActionResult> GetByTitulo(string titulo)
+        {
+            return Ok(await _postagemService.GetByTitulo(titulo));
+        }
+               
+
     }
 
 }
