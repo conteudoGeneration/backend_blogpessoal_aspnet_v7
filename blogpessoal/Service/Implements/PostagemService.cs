@@ -43,9 +43,14 @@ namespace blogpessoal.Service.Implements
             return Postagem;
         }
 
-        public Task<Postagem?> Create(Postagem postagem)
+        public async Task<Postagem?> Create(Postagem postagem)
         {
-            throw new NotImplementedException();
+
+            await _context.Postagens.AddAsync(postagem);
+            await _context.SaveChangesAsync();
+
+            return postagem;
+
         }
 
         public Task<Postagem?> Update(Postagem postagem)

@@ -45,7 +45,19 @@ namespace blogpessoal.Controller
         {
             return Ok(await _postagemService.GetByTitulo(titulo));
         }
-               
+
+        [HttpPost]
+        public async Task<ActionResult> Post([FromBody] Postagem postagem)
+        {
+            var validarPostagem = await _postagemValidator.ValidateAsync(postagem);
+
+            if (!validarPostagem.IsValid)
+                return StatusCode(StatusCodes.Status400BadRequest, validarPostagem);
+
+            await _postagemService.Create(postagem);
+
+            return CreatedAtAction(nameof(GetById), new { id = postagem.Id }, postagem);
+        }
 
     }
 
