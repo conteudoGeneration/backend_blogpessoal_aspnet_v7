@@ -47,7 +47,7 @@ namespace blogpessoal.Controller
         }
 
         [HttpPost]
-        public async Task<ActionResult> Post([FromBody] Postagem postagem)
+        public async Task<ActionResult> Create([FromBody] Postagem postagem)
         {
             var validarPostagem = await _postagemValidator.ValidateAsync(postagem);
 
