@@ -47,7 +47,7 @@ namespace blogpessoal.Controller
         }
 
         [HttpPost]
-        public async Task<ActionResult> Post([FromBody] Postagem postagem)
+        public async Task<ActionResult> Create([FromBody] Postagem postagem)
         {
             var validarPostagem = await _postagemValidator.ValidateAsync(postagem);
 
@@ -60,7 +60,7 @@ namespace blogpessoal.Controller
         }
 
         [HttpPut]
-        public async Task<ActionResult> Put([FromBody] Postagem postagem)
+        public async Task<ActionResult> Update([FromBody] Postagem postagem)
         {
             if (postagem.Id == 0)
                 return BadRequest("Id da Postagem é inválido!");
