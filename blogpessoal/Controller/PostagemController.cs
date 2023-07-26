@@ -59,6 +59,26 @@ namespace blogpessoal.Controller
             return CreatedAtAction(nameof(GetById), new { id = postagem.Id }, postagem);
         }
 
+        [HttpPut]
+        public async Task<ActionResult> Put([FromBody] Postagem postagem)
+        {
+            if (postagem.Id == 0)
+                return BadRequest("Id da Postagem é inválido!");
+
+            var validarPostagem = await _postagemValidator.ValidateAsync(postagem);
+
+            if (!validarPostagem.IsValid)
+                return StatusCode(StatusCodes.Status400BadRequest, validarPostagem);
+
+            var Resposta = await _postagemService.Update(postagem);
+
+            if (Resposta is null)
+                return NotFound("Postagem não encontrada!");
+
+            return Ok(Resposta);
+
+        }
+
     }
 
 }

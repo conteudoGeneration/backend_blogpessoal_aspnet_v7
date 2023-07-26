@@ -53,9 +53,20 @@ namespace blogpessoal.Service.Implements
 
         }
 
-        public Task<Postagem?> Update(Postagem postagem)
+        public async Task<Postagem?> Update(Postagem postagem)
         {
-            throw new NotImplementedException();
+
+            var PostagemUpdate = await _context.Postagens.FindAsync(postagem.Id);
+
+            if (PostagemUpdate is null)
+                return null;
+
+            _context.Entry(PostagemUpdate).State = EntityState.Detached;
+            _context.Entry(postagem).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            return postagem;
+
         }
 
         public Task Delete(Postagem postagem)
