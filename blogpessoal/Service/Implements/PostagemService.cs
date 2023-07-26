@@ -69,9 +69,12 @@ namespace blogpessoal.Service.Implements
 
         }
 
-        public Task Delete(Postagem postagem)
+        public async Task Delete(Postagem postagem)
         {
-            throw new NotImplementedException();
+
+            _context.Postagens.Remove(postagem);
+            await _context.SaveChangesAsync();
+
         }
 
     }

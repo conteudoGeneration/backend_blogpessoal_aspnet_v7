@@ -79,6 +79,20 @@ namespace blogpessoal.Controller
 
         }
 
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var BuscaPostagem = await _postagemService.GetById(id);
+
+            if (BuscaPostagem is null)
+                return NotFound("Postagem não encontrada!");
+
+            await _postagemService.Delete(BuscaPostagem);
+
+            return NoContent();
+
+        }
+
     }
 
 }
