@@ -34,7 +34,7 @@ namespace blogpessoal.Controller
 
             if (Resposta is null)
             {
-                return NotFound();
+                return NotFound("Postagem não encontrada!");
             }
 
             return Ok(Resposta);
