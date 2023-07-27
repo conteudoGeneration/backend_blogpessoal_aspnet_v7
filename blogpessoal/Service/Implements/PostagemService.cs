@@ -51,6 +51,14 @@ namespace blogpessoal.Service.Implements
         public async Task<Postagem?> Create(Postagem postagem)
         {
 
+            if (postagem.Tema is not null)
+            {
+                var BuscaTema = await _context.Temas.FindAsync(postagem.Tema.Id);
+
+                if (BuscaTema is null)
+                    return null;
+            }
+
             postagem.Tema = postagem.Tema is not null ? _context.Temas.FirstOrDefault(t => t.Id == postagem.Tema.Id) : null;
 
             await _context.Postagens.AddAsync(postagem);
@@ -67,6 +75,14 @@ namespace blogpessoal.Service.Implements
 
             if (PostagemUpdate is null)
                 return null;
+
+            if (postagem.Tema is not null)
+            {
+                var BuscaTema = await _context.Temas.FindAsync(postagem.Tema.Id);
+
+                if (BuscaTema is null)
+                    return null;
+            }
 
             postagem.Tema = postagem.Tema is not null ? _context.Temas.FirstOrDefault(t => t.Id == postagem.Tema.Id) : null;
 
