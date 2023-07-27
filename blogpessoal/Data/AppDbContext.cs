@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace blogpessoal.Data
 {
-    public class AppDbContext: DbContext
+    public class AppDbContext : DbContext
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
@@ -13,10 +13,20 @@ namespace blogpessoal.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Postagem>().ToTable("tb_postagens");
+            modelBuilder.Entity<Tema>().ToTable("tb_temas");
+
+            // Relacionamento Postagem -> Tema
+            _ = modelBuilder.Entity<Postagem>()
+                .HasOne(_ => _.Tema)
+                .WithMany(t => t.Postagem)
+                .HasForeignKey("TemaId")
+                .OnDelete(DeleteBehavior.Cascade);
 
         }
 
+        // Registro das Entidades
         public DbSet<Postagem> Postagens { get; set; } = null!;
+        public DbSet<Tema> Temas { get; set; } = null!;
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
