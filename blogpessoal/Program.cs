@@ -36,6 +36,7 @@ namespace blogpessoal
             // Validação das Entidades
             builder.Services.AddTransient<IValidator<Postagem>, PostagemValidator>();
             builder.Services.AddTransient<IValidator<Tema>, TemaValidator>();
+            builder.Services.AddTransient<IValidator<User>, UserValidator>();
 
             // Registrar as Classes e Interfaces Service
             builder.Services.AddScoped<IPostagemService, PostagemService>();
