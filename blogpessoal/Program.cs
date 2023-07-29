@@ -6,6 +6,11 @@ using blogpessoal.Service;
 using blogpessoal.Validator;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using blogpessoal.Security;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using blogpessoal.Security.Implements;
 
 namespace blogpessoal
 {
@@ -42,6 +47,27 @@ namespace blogpessoal
             builder.Services.AddScoped<IPostagemService, PostagemService>();
             builder.Services.AddScoped<ITemaService, TemaService>();
             builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddTransient<IAuthService, AuthService>();
+
+            // Adicionar a Segurança da aplicação
+
+            builder.Services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(o =>
+            {
+                var Key = Encoding.UTF8.GetBytes(Settings.Secret);
+                o.SaveToken = true;
+                o.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Key)
+                };
+            });
 
             // Learn more about configuring Swagger/OpenAPI
             // at https://aka.ms/aspnetcore/swashbuckle
@@ -79,10 +105,19 @@ namespace blogpessoal
                 app.UseSwaggerUI();
             }
 
+            //Habilitar CORS
+
             app.UseCors("MyPolicy");
+
+            // Habilitar Security
+            
+            app.UseHttpsRedirection();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 
+            // Habilitar Controller
             app.MapControllers();
 
             app.Run();
