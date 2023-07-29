@@ -41,6 +41,7 @@ namespace blogpessoal
             // Registrar as Classes e Interfaces Service
             builder.Services.AddScoped<IPostagemService, PostagemService>();
             builder.Services.AddScoped<ITemaService, TemaService>();
+            builder.Services.AddScoped<IUserService, UserService>();
 
             // Learn more about configuring Swagger/OpenAPI
             // at https://aka.ms/aspnetcore/swashbuckle

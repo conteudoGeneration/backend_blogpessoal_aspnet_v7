@@ -17,8 +17,8 @@ namespace blogpessoal.Service.Implements
         public async Task<IEnumerable<Postagem>> GetAll()
         {
             return await _context.Postagens
-                .Include(t => t.Tema)
-                .Include(u => u.Usuario)
+                .Include(p => p.Tema)
+                .Include(p => p.Usuario)
                 .ToListAsync();
         }
 
@@ -27,8 +27,8 @@ namespace blogpessoal.Service.Implements
             try
             {
                 var Postagem = await _context.Postagens
-                    .Include(t => t.Tema)
-                    .Include(u => u.Usuario)
+                    .Include(p => p.Tema)
+                    .Include(p => p.Usuario)
                     .FirstAsync(i => i.Id == id);
 
                 return Postagem;
@@ -43,8 +43,8 @@ namespace blogpessoal.Service.Implements
         public async Task<IEnumerable<Postagem>> GetByTitulo(string titulo)
         {
             var Postagem = await _context.Postagens
-                .Include(t => t.Tema)
-                .Include(u => u.Usuario)
+                .Include(p => p.Tema)
+                .Include(p => p.Usuario)
                 .Where(p => p.Titulo.Contains(titulo))
                 .ToListAsync();
 
@@ -63,7 +63,8 @@ namespace blogpessoal.Service.Implements
             }
 
             postagem.Tema = postagem.Tema is not null ? _context.Temas.FirstOrDefault(t => t.Id == postagem.Tema.Id) : null;
-
+            postagem.Usuario = postagem.Usuario is not null ? _context.Users.FirstOrDefault(t => t.Id == postagem.Usuario.Id) : null;
+            
             await _context.Postagens.AddAsync(postagem);
             await _context.SaveChangesAsync();
 
@@ -88,6 +89,7 @@ namespace blogpessoal.Service.Implements
             }
 
             postagem.Tema = postagem.Tema is not null ? _context.Temas.FirstOrDefault(t => t.Id == postagem.Tema.Id) : null;
+            postagem.Usuario = postagem.Usuario is not null ? _context.Users.FirstOrDefault(t => t.Id == postagem.Usuario.Id) : null;
 
             _context.Entry(PostagemUpdate).State = EntityState.Detached;
             _context.Entry(postagem).State = EntityState.Modified;

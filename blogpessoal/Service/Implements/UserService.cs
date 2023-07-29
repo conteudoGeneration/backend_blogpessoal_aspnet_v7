@@ -17,7 +17,7 @@ namespace blogpessoal.Service.Implements
         public async Task<IEnumerable<User>> GetAll()
         {
             return await _context.Users
-                .Include(p => p.Postagem)
+                .Include(u => u.Postagem)
                 .ToListAsync();
         }
 
@@ -26,7 +26,7 @@ namespace blogpessoal.Service.Implements
             try
             {
                 var Usuario = await _context.Users
-                    .Include(p => p.Postagem)
+                    .Include(u => u.Postagem)
                     .FirstAsync(i => i.Id == id);
 
                 Usuario.Senha = "";
@@ -45,6 +45,7 @@ namespace blogpessoal.Service.Implements
             try
             {
                 var BuscaUsuario = await _context.Users
+                    .Include(u => u.Postagem)
                     .Where(u => u.Usuario == usuario)
                     .FirstOrDefaultAsync();
 
@@ -93,5 +94,6 @@ namespace blogpessoal.Service.Implements
 
             return usuario;
         }
+
     }
 }
