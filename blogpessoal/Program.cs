@@ -49,7 +49,7 @@ namespace blogpessoal
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddTransient<IAuthService, AuthService>();
 
-            // Adicionar a Segurança da aplicação
+            // Adicionar a Validação do Token JWT
 
             builder.Services.AddAuthentication(x =>
             {
@@ -65,7 +65,7 @@ namespace blogpessoal
                     ValidateAudience = false,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Key)
+                    IssuerSigningKey = new SymmetricSecurityKey(Key),
                 };
             });
 
@@ -109,9 +109,7 @@ namespace blogpessoal
 
             app.UseCors("MyPolicy");
 
-            // Habilitar Security
-            
-            app.UseHttpsRedirection();
+            // Habilitar a Autenticação e a Autorização
 
             app.UseAuthentication();
 
