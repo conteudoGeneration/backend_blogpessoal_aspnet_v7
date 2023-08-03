@@ -123,3 +123,6 @@ namespace blogpessoal
     }
 }
 
+// Cria uma Classe Parcial para executar os Testes no xUnit
+public partial class Program { }
+
