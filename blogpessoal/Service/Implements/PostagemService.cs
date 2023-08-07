@@ -63,7 +63,7 @@ namespace blogpessoal.Service.Implements
             }
 
             postagem.Tema = postagem.Tema is not null ? _context.Temas.FirstOrDefault(t => t.Id == postagem.Tema.Id) : null;
-            postagem.Usuario = postagem.Usuario is not null ? _context.Users.FirstOrDefault(t => t.Id == postagem.Usuario.Id) : null;
+            postagem.Usuario = postagem.Usuario is not null ? _context.Users.FirstOrDefault(u => u.Id == postagem.Usuario.Id) : null;
             
             await _context.Postagens.AddAsync(postagem);
             await _context.SaveChangesAsync();
@@ -89,7 +89,7 @@ namespace blogpessoal.Service.Implements
             }
 
             postagem.Tema = postagem.Tema is not null ? _context.Temas.FirstOrDefault(t => t.Id == postagem.Tema.Id) : null;
-            postagem.Usuario = postagem.Usuario is not null ? _context.Users.FirstOrDefault(t => t.Id == postagem.Usuario.Id) : null;
+            postagem.Usuario = postagem.Usuario is not null ? _context.Users.FirstOrDefault(u => u.Id == postagem.Usuario.Id) : null;
 
             _context.Entry(PostagemUpdate).State = EntityState.Detached;
             _context.Entry(postagem).State = EntityState.Modified;

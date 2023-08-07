@@ -92,8 +92,7 @@ namespace blogpessoal.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost]
-        [Route("logar")]
+        [HttpPost("logar")]
         public async Task<IActionResult> Autenticar([FromBody] UserLogin usuarioLogin)
         {
             var Resposta = await _authService.Autenticar(usuarioLogin);
