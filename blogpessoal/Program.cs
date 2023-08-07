@@ -1,4 +1,3 @@
-
 using blogpessoal.Data;
 using blogpessoal.Model;
 using blogpessoal.Service.Implements;
@@ -13,8 +12,6 @@ using System.Text;
 using blogpessoal.Security.Implements;
 using Microsoft.OpenApi.Models;
 using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
-using Swashbuckle.AspNetCore.Swagger;
-using Swashbuckle.AspNetCore.Filters;
 using blogpessoal.Configuration;
 
 namespace blogpessoal
@@ -36,12 +33,33 @@ namespace blogpessoal
             );
 
             // Conexão com o Banco de dados
-            var connectionString = builder.Configuration.
+
+            if (builder.Configuration["Enviroment:Start"] == "PROD")
+            {
+                /* Conexão Remota (Nuvem) - PostgreSQL */
+
+                builder.Configuration
+                .SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("secrets.json");
+
+                var connectionString = builder.Configuration
+                    .GetConnectionString("ProdConnection");
+
+                builder.Services.AddDbContext<AppDbContext>(options =>
+                    options.UseNpgsql(connectionString)
+                );
+
+            }
+            else
+            {
+                /* Conexão Local - SQL Server */
+
+                var connectionString = builder.Configuration.
                     GetConnectionString("DefaultConnection");
 
-            builder.Services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlServer(connectionString)
-            );
+                builder.Services.AddDbContext<AppDbContext>(options =>
+                    options.UseSqlServer(connectionString)
+                );
+            }
 
             // Validação das Entidades
             builder.Services.AddTransient<IValidator<Postagem>, PostagemValidator>();
@@ -149,6 +167,16 @@ namespace blogpessoal
             app.UseSwagger();
 
             app.UseSwaggerUI();
+
+            // Swagger como Página Inicial (Home) na Nuvem
+            if (app.Environment.IsProduction())
+            {
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Blog Pessoal - V1");
+                    c.RoutePrefix = string.Empty;
+                });
+            }
 
             //Habilitar CORS
 
