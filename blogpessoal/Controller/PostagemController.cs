@@ -83,7 +83,7 @@ namespace blogpessoal.Controller
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(long id)
         {
             var BuscaPostagem = await _postagemService.GetById(id);
 

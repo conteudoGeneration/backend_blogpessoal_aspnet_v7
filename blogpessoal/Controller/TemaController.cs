@@ -79,12 +79,12 @@ namespace blogpessoal.Controller
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(long id)
         {
             var BuscaTema = await _temaService.GetById(id);
 
             if (BuscaTema is null)
-                return NotFound();
+                return NotFound("Tema não encontrado!");
 
             await _temaService.Delete(BuscaTema);
 
