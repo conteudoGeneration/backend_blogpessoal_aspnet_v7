@@ -1,80 +1,58 @@
 ﻿using blogpessoal.Model;
-using blogpessoal.Security;
-using blogpessoaltest.Helper;
-using Microsoft.IdentityModel.Tokens;
+using blogpessoaltest.Factory;
+using FluentAssertions;
 using Newtonsoft.Json;
-using System.IdentityModel.Tokens.Jwt;
+using System.Dynamic;
+using System.Net;
 using System.Net.Http.Json;
-using System.Security.Claims;
 using System.Text;
 using Xunit.Extensions.Ordering;
 
 namespace blogpessoaltest.Controllers
 {
-
-    [Order(1)]
-    public class UserControllerTest : IClassFixture<WebAppFactory<Program>>
+    public class UserControllerTest : IClassFixture<WebAppFactory>
     {
+        protected readonly WebAppFactory _factory;
+        protected HttpClient _client;
 
-        private readonly HttpClient _client;
-
+        private readonly dynamic data;
         private string Id { get; set; } = string.Empty;
 
-        public UserControllerTest(WebAppFactory<Program> factory)
+        public UserControllerTest(WebAppFactory factory)
         {
-            
+            _factory = factory;
             _client = factory.CreateClient();
 
+            data = GetToken();
         }
 
-        public static string GerarFakeToken()
+        private static dynamic GetToken()
         {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var tokenKey = Encoding.UTF8.GetBytes(Settings.Secret);
-            var tokenDescriptor = new SecurityTokenDescriptor
-
-            {
-                Subject = new ClaimsIdentity(new Claim[]
-                {
-                    new Claim(ClaimTypes.Name, "root@root.com.br")
-                }),
-                Expires = DateTime.UtcNow.AddHours(1),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(tokenKey), 
-                                                            SecurityAlgorithms.HmacSha256Signature)
-            };
-
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-
-            return "Bearer " + tokenHandler.WriteToken(token).ToString();
-
+            dynamic data = new ExpandoObject();
+            data.sub = "root@root.com";
+            return data;
         }
 
         [Fact, Order(1)]
         public async Task DeveCriarNovoUsuario()
         {
-
             var novoUsuario = new Dictionary<string, string>
             {
-                { "nome", "Root" },
-                { "usuario", "root@root.com.br" },
-                { "senha", "rootroot" },
+                { "nome", "João" },
+                { "usuario", "joao12@email.com.br" },
+                { "senha", "12345678" },
                 { "foto", "-" }
             };
 
-            var corpoRequisicao = JsonConvert.SerializeObject(novoUsuario);
+            var usuarioJson = JsonConvert.SerializeObject(novoUsuario);
 
-            var requisicaoPost = new HttpRequestMessage(HttpMethod.Post, "/usuarios/cadastrar")
-            {
-                Content = new StringContent(
-                corpoRequisicao,
-                Encoding.UTF8,
-                "application/json"
-                )
-            };
+            var corpoRequisicao = new StringContent(usuarioJson, Encoding.UTF8, "application/json");
 
-            var respostaPost = await _client.SendAsync(requisicaoPost);
+            var resposta = await _client.PostAsync("/usuarios/cadastrar", corpoRequisicao);
 
-            Assert.Equal(201, (int)respostaPost.StatusCode);
+            resposta.EnsureSuccessStatusCode();
+
+            resposta.StatusCode.Should().Be(HttpStatusCode.Created);
 
         }
 
@@ -89,42 +67,24 @@ namespace blogpessoaltest.Controllers
                 { "foto", "-" }
             };
 
-            var corpoRequisicao = JsonConvert.SerializeObject(novoUsuario);
+            var usuarioJson = JsonConvert.SerializeObject(novoUsuario);
 
-            //Enviar a primeira vez
+            var corpoRequisicao = new StringContent(usuarioJson, Encoding.UTF8, "application/json");
 
-            var requisicaoPost = new HttpRequestMessage(HttpMethod.Post, "/usuarios/cadastrar")
-            {
-                Content = new StringContent(
-                corpoRequisicao,
-                Encoding.UTF8,
-                "application/json"
-                )
-            };
-
-            await _client.SendAsync(requisicaoPost);
+            await _client.PostAsync("/usuarios/cadastrar", corpoRequisicao);
 
             //Enviar a segunda vez
 
-            var requisicaoPostDuplicada = new HttpRequestMessage(HttpMethod.Post, "/usuarios/cadastrar")
-            {
-                Content = new StringContent(
-                corpoRequisicao,
-                Encoding.UTF8,
-                "application/json"
-                )
-            };
+            var resposta = await _client.PostAsync("/usuarios/cadastrar", corpoRequisicao);
 
-            var respostaPost = await _client.SendAsync(requisicaoPostDuplicada);
-
-            Assert.Equal(400, (int)respostaPost.StatusCode);
-
+            resposta.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
 
         [Fact, Order(3)]
         public async Task DeveAtualizarUsuario()
         {
-            var criarUsuario = new Dictionary<string, string>
+            // Criar Usuário
+            var novoUsuario = new Dictionary<string, string>
             {
                 { "nome", "Paulo Antunes" },
                 { "usuario", "paulo@email.com.br" },
@@ -132,20 +92,11 @@ namespace blogpessoaltest.Controllers
                 { "foto", "-" }
             };
 
-            var corpoRequisicaoCriar = JsonConvert.SerializeObject(criarUsuario);
+            var postJson = JsonConvert.SerializeObject(novoUsuario);
 
-            //Criar usuário
+            var corpoRequisicaoPost = new StringContent(postJson, Encoding.UTF8, "application/json");
 
-            var requisicaoPost = new HttpRequestMessage(HttpMethod.Post, "/usuarios/cadastrar")
-            {
-                Content = new StringContent(
-                corpoRequisicaoCriar,
-                Encoding.UTF8,
-                "application/json"
-                )
-            };
-
-            var respostaPost = await _client.SendAsync(requisicaoPost);
+            var respostaPost = await _client.PostAsync("/usuarios/cadastrar", corpoRequisicaoPost);
 
             var corpoRespostaPost = await respostaPost.Content.ReadFromJsonAsync<User>();
 
@@ -165,32 +116,25 @@ namespace blogpessoaltest.Controllers
                 { "foto", "-" }
             };
 
-            var corpoRequisicaoAtualizar = JsonConvert.SerializeObject(atualizarUsuario);
+            var updateJson = JsonConvert.SerializeObject(atualizarUsuario);
 
-            var requisicaoPut = new HttpRequestMessage(HttpMethod.Put, "/usuarios/atualizar")
-            {
-                Content = new StringContent(
-                corpoRequisicaoAtualizar,
-                Encoding.UTF8,
-                "application/json"
-                )
-            };
+            var corpoRequisicaoUpdate = new StringContent(updateJson, Encoding.UTF8, "application/json");
 
-            _client.DefaultRequestHeaders.Add("Authorization", GerarFakeToken());
-            var respostaPut = await _client.SendAsync(requisicaoPut);
+            _client.SetFakeBearerToken((object)data);
 
-            Assert.Equal(200, (int)respostaPut.StatusCode);
+            var respostaPut = await _client.PutAsync("/usuarios/atualizar", corpoRequisicaoUpdate);
 
+            respostaPut.StatusCode.Should().Be(HttpStatusCode.OK);
         }
 
         [Fact, Order(4)]
         public async Task DeveListarTodosOsUsuarios()
         {
+            _client.SetFakeBearerToken((object)data);
 
-            _client.DefaultRequestHeaders.Add("Authorization", GerarFakeToken());
-            var respostaGet = await _client.GetAsync("/usuarios/all");
+            var resposta = await _client.GetAsync("/usuarios/all");
 
-            Assert.Equal(200, (int)respostaGet.StatusCode);
+            resposta.StatusCode.Should().Be(HttpStatusCode.OK);
 
         }
 

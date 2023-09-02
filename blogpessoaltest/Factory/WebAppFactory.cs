@@ -1,15 +1,19 @@
-﻿using blogpessoal.Data;
+﻿using blogpessoal;
+using blogpessoal.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using WebMotions.Fake.Authentication.JwtBearer;
 
-namespace blogpessoaltest.Helper
+namespace blogpessoaltest.Factory
 {
-    public class WebAppFactory<TEntryPoint> : WebApplicationFactory<Program> where TEntryPoint : Program
+    public class WebAppFactory : WebApplicationFactory<Program>
     {
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
+
             builder.ConfigureServices(services =>
             {
                 var descriptor = services.SingleOrDefault(
@@ -40,8 +44,18 @@ namespace blogpessoaltest.Helper
 
             });
 
-        }
+            builder.UseContentRoot(".");
 
+            builder.UseTestServer().ConfigureTestServices(collection =>
+            {
+                collection.AddAuthentication(options =>
+                {
+                    options.DefaultAuthenticateScheme = FakeJwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = FakeJwtBearerDefaults.AuthenticationScheme;
+                }).AddFakeJwtBearer();
+            });
+            base.ConfigureWebHost(builder);
+        }
     }
 }
 
