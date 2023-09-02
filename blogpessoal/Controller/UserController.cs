@@ -72,7 +72,7 @@ namespace blogpessoal.Controllers
         {
             if (usuario.Id == 0)
                 return BadRequest("O Id do Usuário é inválido!");
-            
+
             var validarUser = await _userValidator.ValidateAsync(usuario);
 
             if (!validarUser.IsValid)
