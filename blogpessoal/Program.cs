@@ -13,8 +13,6 @@ using System.Text;
 using blogpessoal.Security.Implements;
 using Microsoft.OpenApi.Models;
 using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
-using Swashbuckle.AspNetCore.Swagger;
-using Swashbuckle.AspNetCore.Filters;
 using blogpessoal.Configuration;
 
 namespace blogpessoal
@@ -167,7 +165,4 @@ namespace blogpessoal
         }
     }
 }
-
-// Cria uma Classe Parcial para executar os Testes no xUnit
-public partial class Program { }
 
