@@ -15,7 +15,7 @@ namespace blogpessoaltest.Controllers
         protected readonly WebAppFactory _factory;
         protected HttpClient _client;
 
-        private readonly dynamic data;
+        private readonly dynamic token;
         private string Id { get; set; } = string.Empty;
 
         public UserControllerTest(WebAppFactory factory)
@@ -23,7 +23,7 @@ namespace blogpessoaltest.Controllers
             _factory = factory;
             _client = factory.CreateClient();
 
-            data = GetToken();
+            token = GetToken();
         }
 
         private static dynamic GetToken()
@@ -120,7 +120,7 @@ namespace blogpessoaltest.Controllers
 
             var corpoRequisicaoUpdate = new StringContent(updateJson, Encoding.UTF8, "application/json");
 
-            _client.SetFakeBearerToken((object)data);
+            _client.SetFakeBearerToken((object)token);
 
             var respostaPut = await _client.PutAsync("/usuarios/atualizar", corpoRequisicaoUpdate);
 
@@ -130,7 +130,7 @@ namespace blogpessoaltest.Controllers
         [Fact, Order(4)]
         public async Task DeveListarTodosOsUsuarios()
         {
-            _client.SetFakeBearerToken((object)data);
+            _client.SetFakeBearerToken((object)token);
 
             var resposta = await _client.GetAsync("/usuarios/all");
 
