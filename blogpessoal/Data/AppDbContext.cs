@@ -17,8 +17,8 @@ namespace blogpessoal.Data
             modelBuilder.Entity<User>().ToTable("tb_usuarios");
 
             // Relacionamento Postagem -> Tema
-            _ = modelBuilder.Entity<Postagem>()
-                .HasOne(_ => _.Tema)
+            modelBuilder.Entity<Postagem>()
+                .HasOne(p => p.Tema)
                 .WithMany(t => t.Postagem)
                 .HasForeignKey("TemaId")
                 .OnDelete(DeleteBehavior.Cascade);
