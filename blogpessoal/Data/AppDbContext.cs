@@ -17,18 +17,18 @@ namespace blogpessoal.Data
             modelBuilder.Entity<User>().ToTable("tb_usuarios");
 
             // Relacionamento Postagem -> Tema
-            _ = modelBuilder.Entity<Postagem>()
-                .HasOne(_ => _.Tema)
+           modelBuilder.Entity<Postagem>()
+                .HasOne(p => p.Tema)
                 .WithMany(t => t.Postagem)
                 .HasForeignKey("TemaId")
                 .OnDelete(DeleteBehavior.Cascade);
 
             // Relacionamento Postagem -> User
-            _ = modelBuilder.Entity<Postagem>()
-            .HasOne(_ => _.Usuario)
-            .WithMany(u => u.Postagem)
-            .HasForeignKey("UserId")
-            .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Postagem>()
+                .HasOne(p => p.Usuario)
+                .WithMany(u => u.Postagem)
+                .HasForeignKey("UserId")
+                .OnDelete(DeleteBehavior.Cascade);
        
         }
 
