@@ -23,7 +23,7 @@ namespace blogpessoal.Service.Implements
         {
             try
             {
-                var Postagem = await _context.Postagens.FirstAsync(i => i.Id == id);
+                var Postagem = await _context.Postagens.FirstAsync(p => p.Id == id);
 
                 return Postagem;
             }
